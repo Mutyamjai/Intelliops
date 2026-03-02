@@ -16,16 +16,16 @@ print(train.describe())
 print(train.isnull().sum())
 
 print(train["Transported"].value_counts())
-# sns.countplot(x="Transported", data=train)
-# plt.show()
-# sns.countplot(x="HomePlanet", hue="Transported", data=train)
-# plt.show()
+sns.countplot(x="Transported", data=train)
+plt.show()
+sns.countplot(x="HomePlanet", hue="Transported", data=train)
+plt.show()
 
-# sns.countplot(x="CryoSleep", hue="Transported", data=train)
-# plt.show()
+sns.countplot(x="CryoSleep", hue="Transported", data=train)
+plt.show()
 
-# sns.boxplot(x="Transported", y="Age", data=train)
-# plt.show()
+sns.boxplot(x="Transported", y="Age", data=train)
+plt.show()
 
 train.drop(["PassengerId", "Name"], axis=1, inplace=True)
 test_ids = test["PassengerId"]
@@ -33,6 +33,17 @@ test.drop(["PassengerId", "Name"], axis=1, inplace=True)
 
 train['Age'] = train["Age"].fillna(train["Age"].median())
 test["Age"] = test["Age"].fillna(train["Age"].median())
+
+Q1 = train["Age"].quantile(0.25)
+Q3 = train["Age"].quantile(0.75)
+IQR = Q3 - Q1
+
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+
+print(lower, upper)
+
+train["Age"] = train["Age"].clip(lower = 0, upper = upper)
 
 categorical_cols = ["HomePlanet", "CryoSleep", "Destination", "VIP"]
 for col in categorical_cols:
